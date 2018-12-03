@@ -2,10 +2,31 @@ import scala.io.Source
 
 object Main {
     def main(args: Array[String]): Unit = {
-        val ans = readInByLine("./input.txt")
+        println(secondAnswer)
+    }
+
+    def firstAnswer(): Int = {
+        readInByLine("./input.txt")
             .map(x => toInt(x))
             .fold(0)(_ + _)
-        println(ans)
+    }
+    
+    def secondAnswer(): Int = {
+        val lis = readInByLine("./input.txt").map(x => toInt(x))
+        stopAfterRepeat(
+            lis,
+            lis,
+            0,
+            Map[Int,Boolean]()
+        )
+    }
+
+    def stopAfterRepeat(orig: List[Int], as: List[Int], acc: Int, m: Map[Int, Boolean]): Int = as match {
+        case Nil    => stopAfterRepeat(orig, orig, acc, m)
+        case x::xs  => m.get(acc + x) match {
+            case Some(sum)  => acc + x
+            case _          => stopAfterRepeat(orig, xs, acc + x, m + ((acc+x) -> true))
+        }
     }
 
     // Reads the file in line by line into a string
